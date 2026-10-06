@@ -12,10 +12,21 @@ import { rewardOnce } from "@/lib/exp-ledger";
 import { useAuth } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
 import {
+  CheckCheck,
+  ChevronRight,
   DownloadCloud,
+  FastForward,
   HardDrive,
   CheckCircle2,
+  Info,
+  List,
+  Loader2,
+  Moon,
   Play,
+  Search,
+  Server,
+  SkipBack,
+  SkipForward,
   WifiOff,
   Sparkles,
 } from "lucide-react";
@@ -376,7 +387,7 @@ function WatchPage() {
           <Link to="/" className="hover:text-primary transition-colors shrink-0">
             Beranda
           </Link>
-          <i className="fa-solid fa-chevron-right text-[10px] shrink-0" />
+          <ChevronRight className="h-3 w-3 shrink-0" />
           {resolvedAnimeId ? (
             <>
               <Link
@@ -386,7 +397,7 @@ function WatchPage() {
               >
                 {animeTitle}
               </Link>
-              <i className="fa-solid fa-chevron-right text-[10px] shrink-0" />
+              <ChevronRight className="h-3 w-3 shrink-0" />
             </>
           ) : null}
           <span className="text-foreground font-semibold truncate">{episodeData.title}</span>
@@ -398,9 +409,9 @@ function WatchPage() {
             <Link
               to="/anime/$animeId"
               params={{ animeId: resolvedAnimeId }}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-3 py-1 font-medium text-foreground hover:bg-accent"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 font-medium text-foreground hover:bg-accent"
             >
-              <i className="fa-solid fa-circle-info text-primary" />
+              <Info className="h-3.5 w-3.5 text-primary" />
               Detail Anime
             </Link>
           ) : null}
@@ -418,14 +429,14 @@ function WatchPage() {
             {isAmbient ? (
               <div
                 aria-hidden="true"
-                className="absolute -inset-3 sm:-inset-6 -z-10 rounded-3xl bg-primary/25 blur-3xl opacity-70 transition-opacity duration-700 pointer-events-none"
+                className="absolute -inset-3 sm:-inset-6 -z-10 rounded-3xl bg-primary/20 blur-3xl opacity-60 transition-opacity duration-700 pointer-events-none"
               />
             ) : null}
 
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-black border border-border/80">
+            <div className="relative overflow-hidden rounded-xl bg-black ring-1 ring-border">
               {isSleepTriggered ? (
                 <div className="flex aspect-video w-full flex-col items-center justify-center bg-black/95 p-6 text-center text-white space-y-3">
-                  <span className="text-4xl">🌙</span>
+                  <Moon className="h-10 w-10 text-primary" />
                   <h3 className="text-base font-bold">Waktu Tidur Telah Tiba</h3>
                   <p className="text-xs text-muted-foreground max-w-xs">
                     Pemutaran anime dihentikan otomatis oleh Sleep Timer untuk menghemat daya dan
@@ -434,7 +445,7 @@ function WatchPage() {
                   <button
                     type="button"
                     onClick={() => setIsSleepTriggered(false)}
-                    className="rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground hover:bg-primary/90 transition-colors"
+                    className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-colors"
                   >
                     Lanjutkan Menonton
                   </button>
@@ -466,12 +477,12 @@ function WatchPage() {
           </div>
 
           {/* Player Controls: Server selection + Navigation */}
-          <div className="rounded-2xl border border-border/80 bg-card p-4 space-y-4 shadow-sm">
+          <div className="rounded-xl border border-border bg-card p-4 space-y-4">
             {/* Episode Title & Prev/Next Quick Navigation + Enhancements */}
             <div className="flex flex-col gap-3 border-b border-border/60 pb-3">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <h1 className="font-display text-base sm:text-lg font-bold text-foreground">
+                  <h1 className="font-display text-lg text-foreground sm:text-xl">
                     {episodeData.title}
                   </h1>
                   {episodeData.releaseTime ? (
@@ -487,17 +498,17 @@ function WatchPage() {
                       params={{ episodeId: prevEpisodeId }}
                       search={{ a: resolvedAnimeId, autoplay: true }}
                       onClick={() => setIsAutoPlayActive(true)}
-                      className="press-soft inline-flex items-center gap-1.5 rounded-xl border border-border/80 bg-background px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-accent cursor-pointer"
+                      className="press-soft inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground hover:bg-accent cursor-pointer"
                     >
-                      <i className="fa-solid fa-backward-step" />
+                      <SkipBack className="h-3.5 w-3.5" />
                       Eps Sebelumnya
                     </Link>
                   ) : (
                     <button
                       disabled
-                      className="inline-flex items-center gap-1.5 rounded-xl border border-border/40 bg-muted/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground/50 cursor-not-allowed"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-border/40 bg-muted/40 px-3 py-2 text-sm font-medium text-muted-foreground/50 cursor-not-allowed"
                     >
-                      <i className="fa-solid fa-backward-step" />
+                      <SkipBack className="h-3.5 w-3.5" />
                       Eps Sebelumnya
                     </button>
                   )}
@@ -508,18 +519,18 @@ function WatchPage() {
                       params={{ episodeId: nextEpisodeId }}
                       search={{ a: resolvedAnimeId, autoplay: true }}
                       onClick={() => setIsAutoPlayActive(true)}
-                      className="press-soft inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 cursor-pointer"
+                      className="press-soft inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 cursor-pointer"
                     >
                       Eps Berikutnya
-                      <i className="fa-solid fa-forward-step" />
+                      <SkipForward className="h-3.5 w-3.5" />
                     </Link>
                   ) : (
                     <button
                       disabled
-                      className="inline-flex items-center gap-1.5 rounded-xl border border-border/40 bg-muted/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground/50 cursor-not-allowed"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-border/40 bg-muted/40 px-3 py-2 text-sm font-medium text-muted-foreground/50 cursor-not-allowed"
                     >
                       Eps Berikutnya
-                      <i className="fa-solid fa-forward-step" />
+                      <SkipForward className="h-3.5 w-3.5" />
                     </button>
                   )}
                 </div>
@@ -543,7 +554,7 @@ function WatchPage() {
                         : "bg-muted text-muted-foreground hover:bg-accent",
                     )}
                   >
-                    <i className="fa-solid fa-forward-fast text-[10px]" />
+                    <FastForward className="h-3 w-3" />
                     Auto-Next: {autoNext ? "Aktif" : "Mati"}
                   </button>
 
@@ -555,7 +566,7 @@ function WatchPage() {
                       title="Tandai selesai & putar episode berikutnya"
                       className="hidden sm:inline-flex items-center gap-1 rounded-lg border border-border/80 bg-background px-2 py-1 text-[11px] font-medium text-foreground hover:bg-accent cursor-pointer"
                     >
-                      <i className="fa-solid fa-check-double text-[10px] text-emerald-500" />
+                      <CheckCheck className="h-3 w-3 text-primary" />
                       Selesai & Lanjut
                     </button>
                   ) : null}
@@ -574,13 +585,13 @@ function WatchPage() {
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-foreground uppercase tracking-wide">
-                      <i className="fa-solid fa-server text-primary mr-1.5" />
+                    <span className="text-sm font-semibold text-foreground">
+                      <Server className="mr-1.5 inline h-3.5 w-3.5 text-primary" />
                       Pilihan Server
                     </span>
                     {isResolving ? (
                       <span className="inline-flex items-center gap-1 text-[11px] font-medium text-primary">
-                        <i className="fa-solid fa-circle-notch animate-spin text-[10px]" />
+                        <Loader2 className="h-3 w-3 animate-spin" />
                         Mengganti server...
                       </span>
                     ) : null}
@@ -642,10 +653,10 @@ function WatchPage() {
 
           {/* Download Links Section */}
           {episodeData.downloads && episodeData.downloads.length > 0 ? (
-            <div className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 space-y-4 shadow-sm">
+            <div className="rounded-xl border border-border bg-card p-4 sm:p-5 space-y-4">
               <div className="flex items-center gap-2 border-b border-border/60 pb-3">
-                <i className="fa-solid fa-download text-primary" />
-                <h3 className="font-display text-sm font-bold text-foreground">
+                <DownloadCloud className="h-4 w-4 text-primary" />
+                <h3 className="font-display text-base text-foreground">
                   Tautan Unduh Eksternal
                 </h3>
                 <span className="text-xs text-muted-foreground ml-auto">
@@ -688,7 +699,7 @@ function WatchPage() {
                           rel="noopener noreferrer"
                           className="press-soft inline-flex items-center gap-1 rounded-lg border border-border/70 bg-card px-2.5 py-1 text-[11px] font-medium text-foreground hover:bg-accent hover:border-primary/50"
                         >
-                          <i className="fa-solid fa-cloud-arrow-down text-[10px] text-primary" />
+                          <DownloadCloud className="h-3 w-3 text-primary" />
                           {link.title}
                         </a>
                       ))}
@@ -704,11 +715,11 @@ function WatchPage() {
         <div
           className="space-y-4 lg:col-span-4 xl:col-span-3"
         >
-          <div className="rounded-2xl border border-border/80 bg-card p-4 space-y-3 shadow-sm sticky top-20">
+          <div className="rounded-xl border border-border bg-card p-4 space-y-3 sticky top-20">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <i className="fa-solid fa-list-ul text-primary text-sm" />
-                <h3 className="font-display text-sm font-bold text-foreground">Daftar Episode</h3>
+                <List className="h-4 w-4 text-muted-foreground" />
+                <h3 className="font-display text-base text-foreground">Daftar Episode</h3>
               </div>
               <span className="text-xs font-semibold text-muted-foreground">
                 {sortedEpisodes.length} Eps
@@ -725,7 +736,7 @@ function WatchPage() {
                   onChange={(e) => setEpisodeFilter(e.target.value)}
                   className="h-8 w-full rounded-lg border border-border/80 bg-background pl-7 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-hidden"
                 />
-                <i className="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground" />
+                <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
               </div>
             ) : null}
 
@@ -742,15 +753,15 @@ function WatchPage() {
                       search={{ a: resolvedAnimeId, autoplay: true }}
                       onClick={() => setIsAutoPlayActive(true)}
                       className={cn(
-                        "press-soft flex items-center justify-between gap-2 rounded-xl p-2.5 text-xs font-medium transition-all",
+                        "flex items-center justify-between gap-2 rounded-lg p-2.5 text-sm font-medium transition-colors",
                         isActive
-                          ? "bg-primary text-primary-foreground font-bold shadow-xs"
-                          : "bg-background/80 text-card-foreground hover:bg-accent border border-border/60",
+                          ? "bg-primary text-primary-foreground font-semibold"
+                          : "text-card-foreground hover:bg-accent",
                       )}
                     >
                       <div className="flex items-center gap-2 truncate">
                         {isActive ? (
-                          <i className="fa-solid fa-play text-[10px] animate-pulse" />
+                          <Play className="h-3 w-3 fill-current" />
                         ) : (
                           <span className="flex h-5 w-5 items-center justify-center rounded-md bg-muted text-[10px] font-bold text-muted-foreground shrink-0">
                             {ep.number}
