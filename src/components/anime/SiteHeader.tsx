@@ -12,6 +12,7 @@ import { resolveIdentity, useProfilePrefs } from "@/lib/profile-prefs";
 import { resolveFrame } from "@/lib/cosmetics";
 import { AvatarWithFrame } from "@/components/anime/ProfileCosmetics";
 import { getUnreadUpdatesCount } from "@/lib/notifications";
+import { getUnreadNewAnimeCount, onNewAnimeFeedChange } from "@/lib/new-anime";
 import {
   Bell,
   CalendarDays,
@@ -26,6 +27,7 @@ import {
   Play,
   Search,
   SlidersHorizontal,
+  Star,
   Tags,
   Trophy,
   User as UserIcon,
@@ -83,10 +85,15 @@ export function SiteHeader() {
   }, []);
 
   useEffect(() => {
-    const syncNotifs = () => setUnreadNotifCount(getUnreadUpdatesCount());
+    const syncNotifs = () =>
+      setUnreadNotifCount(getUnreadUpdatesCount() + getUnreadNewAnimeCount());
     syncNotifs();
     window.addEventListener("site-updates-read-changed", syncNotifs);
-    return () => window.removeEventListener("site-updates-read-changed", syncNotifs);
+    const offFeed = onNewAnimeFeedChange(syncNotifs);
+    return () => {
+      window.removeEventListener("site-updates-read-changed", syncNotifs);
+      offFeed();
+    };
   }, []);
 
   useEffect(() => {
@@ -172,9 +179,9 @@ export function SiteHeader() {
             <Link
               to="/"
               id="site-logo"
-              className="group flex items-center gap-2.5 font-display text-lg font-bold tracking-tight text-foreground transition-opacity hover:opacity-90"
+              className="group flex items-center gap-2.5 font-display text-lg tracking-tight text-foreground transition-opacity hover:opacity-90"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-xs transition-transform group-hover:scale-105">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground  transition-transform group-hover:scale-105">
                 <Play className="h-4 w-4 fill-current ml-0.5" />
               </div>
               <span className="flex items-center tracking-tight text-base font-extrabold sm:text-lg">
@@ -241,7 +248,7 @@ export function SiteHeader() {
 
               {/* Instant Search Dropdown Popover */}
               {showSearchDropdown && debouncedTerm ? (
-                <div className="absolute right-0 top-11 z-50 w-84 overflow-hidden rounded-xl border border-border bg-card p-2 shadow-xl">
+                <div className="absolute right-0 top-11 z-50 w-84 overflow-hidden rounded-xl border border-border bg-card p-2 ">
                   <div className="flex items-center justify-between border-b border-border/60 px-2.5 py-1.5 text-[11px] font-semibold text-muted-foreground">
                     <span>Hasil Pencarian</span>
                     {isFetching ? (
@@ -275,7 +282,7 @@ export function SiteHeader() {
                             </p>
                             <div className="flex items-center gap-2 mt-0.5 text-[11px] text-muted-foreground">
                               {item.score ? (
-                                <span className="font-semibold text-amber-500">★ {item.score}</span>
+                                <span className="inline-flex items-center gap-0.5 font-semibold text-foreground"><Star className="h-3 w-3 fill-amber-400 text-amber-400" />{item.score}</span>
                               ) : null}
                               <span className="truncate">{item.status || "Sub Indo"}</span>
                             </div>
@@ -361,7 +368,7 @@ export function SiteHeader() {
             >
               <Bell className="h-4 w-4 text-foreground" />
               {unreadNotifCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-primary px-1 text-[9px] font-black text-primary-foreground shadow-xs animate-pulse">
+                <span className="absolute -top-1 -right-1 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-primary px-1 text-[9px] font-black text-primary-foreground  animate-pulse">
                   {unreadNotifCount}
                 </span>
               )}
@@ -415,7 +422,7 @@ export function SiteHeader() {
                     setAuthModalOpen(true);
                   }}
                   title="Daftar akun baru dan dapatkan +100 EXP"
-                  className="hidden md:inline-flex h-9 items-center gap-1 rounded-lg bg-primary px-2.5 text-xs font-bold text-primary-foreground shadow-xs transition-all hover:bg-primary/90 cursor-pointer"
+                  className="hidden md:inline-flex h-9 items-center gap-1 rounded-lg bg-primary px-2.5 text-xs font-bold text-primary-foreground  transition-all hover:bg-primary/90 cursor-pointer"
                 >
                   <span>Daftar</span>
                   <span className="rounded-full bg-primary-foreground/20 px-1 text-[9px] font-black">
@@ -580,7 +587,7 @@ export function SiteHeader() {
                         setAuthModalTab("login");
                         setAuthModalOpen(true);
                       }}
-                      className="flex items-center justify-center gap-1.5 rounded-xl border border-border/80 bg-background p-2.5 text-xs font-bold text-foreground shadow-xs hover:bg-secondary transition-colors cursor-pointer"
+                      className="flex items-center justify-center gap-1.5 rounded-xl border border-border/80 bg-background p-2.5 text-xs font-bold text-foreground  hover:bg-secondary transition-colors cursor-pointer"
                     >
                       <LogIn className="h-4 w-4 text-primary" />
                       <span>Masuk</span>
@@ -592,7 +599,7 @@ export function SiteHeader() {
                         setAuthModalTab("register");
                         setAuthModalOpen(true);
                       }}
-                      className="flex items-center justify-center gap-1 rounded-xl bg-primary p-2.5 text-xs font-bold text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 cursor-pointer"
+                      className="flex items-center justify-center gap-1 rounded-xl bg-primary p-2.5 text-xs font-bold text-primary-foreground  transition-colors hover:bg-primary/90 cursor-pointer"
                     >
                       <span>Daftar Akun</span>
                       <span className="rounded-full bg-primary-foreground/20 px-1 text-[9px] font-black">
