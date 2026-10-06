@@ -2,17 +2,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import {
-  Archive,
-  Building2,
-  CheckCircle2,
   ChevronDown,
   ChevronUp,
-  Clock,
   Film,
-  Layers,
   LayoutGrid,
   List,
-  ListOrdered,
+  Package,
   Play,
   Search,
   Star,
@@ -106,255 +101,200 @@ export function AnimeDetailPage() {
 
   const isOngoing = /ongoing|tayang/i.test(anime.status ?? "");
 
+  const quickFacts = [
+    isOngoing ? "Ongoing" : "Tamat",
+    anime.type,
+    anime.totalEpisodes ? `${anime.totalEpisodes} episode` : null,
+    anime.duration,
+    anime.studio,
+  ].filter(Boolean) as string[];
+
   return (
-    <div className="mx-auto max-w-7xl space-y-10 px-4 py-6 sm:py-8">
-      {/* Hero Backdrop Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-card shadow-xl">
+    <div className="mx-auto max-w-7xl space-y-10 px-4 py-5 sm:py-8">
+      {/* Kepala: poster + judul + aksi utama */}
+      <header className="relative overflow-hidden rounded-xl border border-border bg-card">
         {anime.poster ? (
-          <div className="absolute inset-0 overflow-hidden">
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0">
             <img
               src={anime.poster}
               alt=""
-              aria-hidden="true"
-              className="h-full w-full object-cover blur-2xl scale-125 opacity-25 dark:opacity-15"
+              className="h-full w-full scale-110 object-cover opacity-20 blur-2xl"
             />
+            <div className="absolute inset-0 bg-gradient-to-r from-card via-card/90 to-card/50" />
           </div>
         ) : null}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-card via-card/90 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-card via-card/80 to-transparent" />
-
-        <div className="relative z-10 p-6 sm:p-8 md:p-10">
-          <div className="flex flex-col md:flex-row gap-6 lg:gap-8 items-start">
-            {/* Poster Card */}
-            <div className="relative shrink-0 w-44 sm:w-52 lg:w-60 overflow-hidden rounded-2xl border-2 border-white/10 shadow-2xl bg-muted mx-auto md:mx-0">
-              {anime.poster ? (
-                <img
-                  src={anime.poster}
-                  alt={anime.title}
-                  className="h-full w-full object-cover aspect-[2/3]"
-                />
-              ) : (
-                <div className="aspect-[2/3] flex items-center justify-center text-muted-foreground">
-                  <Film className="h-10 w-10 text-muted-foreground/40" />
-                </div>
-              )}
-
-              {/* Status Badge */}
-              <div className="absolute top-2 left-2">
-                {isOngoing ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/90 px-2.5 py-0.5 text-[11px] font-bold text-white shadow-xs backdrop-blur-xs">
-                    <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
-                    ONGOING
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-sky-600/90 px-2.5 py-0.5 text-[11px] font-bold text-white shadow-xs backdrop-blur-xs">
-                    <CheckCircle2 className="h-3 w-3" />
-                    TAMAT
-                  </span>
-                )}
+        <div className="relative flex flex-col items-center gap-6 p-5 sm:p-8 md:flex-row md:items-start lg:gap-10 lg:p-10">
+          <div className="w-40 shrink-0 overflow-hidden rounded-lg bg-muted ring-1 ring-border sm:w-52 lg:w-60">
+            {anime.poster ? (
+              <img
+                src={anime.poster}
+                alt={anime.title}
+                className="aspect-[2/3] h-full w-full object-cover"
+              />
+            ) : (
+              <div className="flex aspect-[2/3] items-center justify-center text-muted-foreground">
+                <Film className="h-10 w-10 opacity-40" />
               </div>
+            )}
+          </div>
+
+          <div className="w-full min-w-0 flex-1 space-y-4 text-center md:text-left">
+            <div className="space-y-2">
+              {anime.japanese ? (
+                <p className="text-sm text-muted-foreground">{anime.japanese}</p>
+              ) : null}
+              <h1 className="font-display text-2xl text-foreground sm:text-3xl lg:text-4xl">
+                {anime.title}
+              </h1>
             </div>
 
-            {/* Details Section */}
-            <div className="flex-1 space-y-4">
-              <div className="space-y-1">
-                {anime.japanese ? (
-                  <p className="text-xs font-semibold text-primary tracking-wide uppercase">
-                    {anime.japanese}
-                  </p>
-                ) : null}
-                <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight leading-tight">
-                  {anime.title}
-                </h1>
+            <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-muted-foreground md:justify-start">
+              {anime.score ? (
+                <span className="inline-flex items-center gap-1 font-semibold text-foreground">
+                  <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                  {anime.score}
+                </span>
+              ) : null}
+              <span>{quickFacts.join(" · ")}</span>
+            </p>
+
+            {anime.genres && anime.genres.length > 0 ? (
+              <div className="flex flex-wrap justify-center gap-2 md:justify-start">
+                {anime.genres.map((g) => (
+                  <Link
+                    key={g}
+                    to="/genre/$genreId"
+                    params={{ genreId: g.toLowerCase().replace(/\s+/g, "-") }}
+                    className="rounded-full border border-border bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                  >
+                    {g}
+                  </Link>
+                ))}
               </div>
+            ) : null}
 
-              {/* Stats badges */}
-              <div className="flex flex-wrap items-center gap-2 pt-1">
-                {anime.score ? (
-                  <span className="inline-flex items-center gap-1 rounded-lg bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 text-xs font-bold text-amber-500">
-                    <Star className="h-3 w-3 fill-amber-400" />
-                    {anime.score}
-                  </span>
-                ) : null}
-
-                {anime.totalEpisodes ? (
-                  <span className="inline-flex items-center gap-1 rounded-lg bg-card border border-border/80 px-2.5 py-1 text-xs font-semibold text-foreground">
-                    <Layers className="h-3 w-3 text-primary" />
-                    {anime.totalEpisodes} Episode
-                  </span>
-                ) : null}
-
-                {anime.studio ? (
-                  <span className="inline-flex items-center gap-1 rounded-lg bg-card border border-border/80 px-2.5 py-1 text-xs font-semibold text-foreground">
-                    <Building2 className="h-3 w-3 text-primary" />
-                    {anime.studio}
-                  </span>
-                ) : null}
-
-                {anime.duration ? (
-                  <span className="inline-flex items-center gap-1 rounded-lg bg-card border border-border/80 px-2.5 py-1 text-xs font-semibold text-foreground">
-                    <Clock className="h-3 w-3 text-muted-foreground" />
-                    {anime.duration}
-                  </span>
-                ) : null}
-
-                {anime.type ? (
-                  <span className="inline-flex items-center gap-1 rounded-lg bg-card border border-border/80 px-2.5 py-1 text-xs font-semibold text-muted-foreground">
-                    {anime.type}
-                  </span>
-                ) : null}
-              </div>
-
-              {/* Genre Pills */}
-              {anime.genres && anime.genres.length > 0 ? (
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  {anime.genres.map((g) => (
-                    <Link
-                      key={g}
-                      to="/genre/$genreId"
-                      params={{ genreId: g.toLowerCase().replace(/\s+/g, "-") }}
-                      className="press-soft inline-flex items-center rounded-full border border-border/80 bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground transition hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
-                    >
-                      {g}
-                    </Link>
-                  ))}
-                </div>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-1 md:justify-start">
+              {targetEpisode ? (
+                <Link
+                  to="/watch/$episodeId"
+                  params={{ episodeId: targetEpisode.id }}
+                  search={{ a: anime.id }}
+                  className="press-soft inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                >
+                  <Play className="h-4 w-4 fill-current" />
+                  {targetLabel}
+                </Link>
               ) : null}
 
-              {/* Action Bar */}
-              <div className="flex flex-wrap items-center gap-3 pt-3">
-                {targetEpisode ? (
-                  <Link
-                    to="/watch/$episodeId"
-                    params={{ episodeId: targetEpisode.id }}
-                    search={{ a: anime.id }}
-                    className="press-soft inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/30 transition hover:bg-primary/90"
-                  >
-                    <i className="fa-solid fa-play text-xs" />
-                    {targetLabel}
-                  </Link>
-                ) : null}
+              <WatchlistButton
+                animeId={anime.id}
+                title={anime.title}
+                poster={anime.poster}
+                variant="outline"
+              />
 
-                <WatchlistButton
-                  animeId={anime.id}
-                  title={anime.title}
-                  poster={anime.poster}
-                  variant="outline"
-                />
+              {anime.batch ? (
+                <Link
+                  to="/download/$batchId"
+                  params={{ batchId: anime.batch.batchId }}
+                  className="press-soft inline-flex h-11 items-center gap-2 rounded-lg border border-border bg-background/70 px-4 text-sm font-semibold text-foreground transition-colors hover:border-primary hover:text-primary"
+                >
+                  <Package className="h-4 w-4" />
+                  Unduh batch
+                </Link>
+              ) : null}
 
-                {anime.batch ? (
-                  <Link
-                    to="/download/$batchId"
-                    params={{ batchId: anime.batch.batchId }}
-                    className="press-soft inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-sm font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20"
-                  >
-                    <i className="fa-solid fa-box-archive text-xs" />
-                    Unduh Batch
-                  </Link>
-                ) : null}
-
-                <ShareButton title={anime.title} />
-              </div>
+              <ShareButton title={anime.title} />
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Main Grid: Details / Synopsis + Episodes */}
-      <div className="grid gap-8 lg:grid-cols-12">
-        {/* Left Column: Synopsis & Metadata Info */}
-        <div className="space-y-6 lg:col-span-8">
-          {/* Synopsis */}
+      <div className="grid gap-10 lg:grid-cols-12">
+        <div className="space-y-10 lg:col-span-8">
           {anime.synopsis ? (
-            <div className="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 space-y-3 shadow-xs">
-              <h2 className="font-display text-base sm:text-lg font-bold text-foreground">
+            <section className="space-y-3">
+              <h2 className="section-head font-display text-xl text-foreground sm:text-2xl">
                 Sinopsis
               </h2>
               <p
                 className={cn(
-                  "text-xs sm:text-sm leading-relaxed text-muted-foreground whitespace-pre-line",
+                  "max-w-prose whitespace-pre-line text-[15px] leading-relaxed text-muted-foreground",
                   !synopsisOpen && "line-clamp-4",
                 )}
               >
                 {anime.synopsis}
               </p>
               <button
+                type="button"
                 onClick={() => setSynopsisOpen((v) => !v)}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline"
+                className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
               >
-                {synopsisOpen ? "Tutup ringkasan" : "Baca selengkapnya"}
-                <i
-                  className={cn(
-                    "fa-solid text-[10px]",
-                    synopsisOpen ? "fa-chevron-up" : "fa-chevron-down",
-                  )}
-                />
+                {synopsisOpen ? "Tutup" : "Baca selengkapnya"}
+                {synopsisOpen ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
               </button>
-            </div>
+            </section>
           ) : null}
 
-          {/* Episode List Section */}
-          <div className="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 space-y-4 shadow-xs">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border/60 pb-4">
-              <div className="flex items-center gap-2">
-                <i className="fa-solid fa-list-ol text-primary" />
-                <h2 className="font-display text-base sm:text-lg font-bold text-foreground">
-                  Daftar Episode
-                </h2>
-                <span className="text-xs font-semibold text-muted-foreground">
-                  ({sortedEpisodes.length})
+          <section className="space-y-4">
+            <div className="section-head">
+              <h2 className="font-display text-xl text-foreground sm:text-2xl">
+                Episode
+                <span className="ml-2 text-base text-muted-foreground">
+                  {sortedEpisodes.length}
                 </span>
-              </div>
+              </h2>
 
-              {/* View toggle & Filter */}
               <div className="flex items-center gap-2">
                 {sortedEpisodes.length > 6 ? (
-                  <div className="relative w-40 sm:w-48">
+                  <label className="relative block w-36 sm:w-48">
+                    <span className="sr-only">Cari episode</span>
+                    <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                     <input
                       type="text"
-                      placeholder="Cari eps..."
+                      placeholder="Cari episode"
                       value={episodeSearch}
                       onChange={(e) => setEpisodeSearch(e.target.value)}
-                      className="h-8 w-full rounded-lg border border-border/80 bg-background pl-7 pr-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-hidden"
+                      className="h-9 w-full rounded-lg border border-border bg-background pl-8 pr-2 text-sm text-foreground placeholder:text-muted-foreground"
                     />
-                    <i className="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground" />
-                  </div>
+                  </label>
                 ) : null}
 
-                <div className="flex items-center rounded-lg border border-border/80 bg-background p-0.5">
-                  <button
-                    onClick={() => setViewMode("grid")}
-                    aria-label="Tampilan grid"
-                    className={cn(
-                      "flex h-7 w-7 items-center justify-center rounded-md text-xs transition",
-                      viewMode === "grid"
-                        ? "bg-card text-primary shadow-xs font-bold"
-                        : "text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    <i className="fa-solid fa-grip" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode("list")}
-                    aria-label="Tampilan list"
-                    className={cn(
-                      "flex h-7 w-7 items-center justify-center rounded-md text-xs transition",
-                      viewMode === "list"
-                        ? "bg-card text-primary shadow-xs font-bold"
-                        : "text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    <i className="fa-solid fa-bars" />
-                  </button>
+                <div className="flex items-center rounded-lg border border-border bg-background p-0.5">
+                  {(
+                    [
+                      ["grid", LayoutGrid, "Tampilan kotak"],
+                      ["list", List, "Tampilan daftar"],
+                    ] as const
+                  ).map(([mode, Icon, label]) => (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => setViewMode(mode)}
+                      aria-label={label}
+                      aria-pressed={viewMode === mode}
+                      className={cn(
+                        "flex h-8 w-8 items-center justify-center rounded-md transition-colors",
+                        viewMode === mode
+                          ? "bg-secondary text-primary"
+                          : "text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      <Icon className="h-4 w-4" />
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
 
-            {/* Episodes Display */}
             {filteredEpisodes.length > 0 ? (
               viewMode === "grid" ? (
-                <div className="grid grid-cols-[repeat(auto-fill,minmax(56px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(64px,1fr))] gap-2">
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(56px,1fr))] gap-2 sm:grid-cols-[repeat(auto-fill,minmax(64px,1fr))]">
                   {filteredEpisodes.map((ep) => {
                     const isLastWatched = historyItem?.episodeId === ep.id;
                     return (
@@ -363,143 +303,93 @@ export function AnimeDetailPage() {
                         to="/watch/$episodeId"
                         params={{ episodeId: ep.id }}
                         search={{ a: anime.id }}
-                        className={cn(
-                          "press-soft flex aspect-square flex-col items-center justify-center rounded-xl border text-xs font-bold transition-all hover:scale-105",
-                          isLastWatched
-                            ? "border-primary bg-primary/20 text-primary shadow-xs"
-                            : "border-border/80 bg-background/70 text-card-foreground hover:border-primary/50 hover:bg-accent",
-                        )}
                         title={ep.title}
+                        className={cn(
+                          "flex aspect-square items-center justify-center rounded-lg border text-sm font-semibold transition-colors",
+                          isLastWatched
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-border bg-card text-card-foreground hover:border-primary hover:text-primary",
+                        )}
                       >
-                        <span>{ep.number}</span>
-                        {isLastWatched ? (
-                          <span className="text-[8px] font-semibold uppercase text-primary">
-                            Nonton
-                          </span>
-                        ) : null}
+                        {ep.number}
                       </Link>
                     );
                   })}
                 </div>
               ) : (
-                <div className="space-y-1.5 divide-y divide-border/40">
+                <ul className="divide-y divide-border rounded-xl border border-border bg-card">
                   {filteredEpisodes.map((ep) => {
                     const isLastWatched = historyItem?.episodeId === ep.id;
                     return (
-                      <Link
-                        key={ep.id}
-                        to="/watch/$episodeId"
-                        params={{ episodeId: ep.id }}
-                        search={{ a: anime.id }}
-                        className={cn(
-                          "press-soft flex items-center justify-between p-3 rounded-xl transition hover:bg-accent",
-                          isLastWatched && "bg-primary/10",
-                        )}
-                      >
-                        <div className="flex items-center gap-3 truncate">
-                          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-xs font-bold text-foreground shrink-0">
-                            {ep.number}
+                      <li key={ep.id}>
+                        <Link
+                          to="/watch/$episodeId"
+                          params={{ episodeId: ep.id }}
+                          search={{ a: anime.id }}
+                          className={cn(
+                            "flex items-center justify-between gap-3 p-3 transition-colors hover:bg-secondary/60",
+                            isLastWatched && "bg-primary/10",
+                          )}
+                        >
+                          <span className="flex min-w-0 items-center gap-3">
+                            <span className="w-8 shrink-0 text-sm font-semibold text-muted-foreground">
+                              {ep.number}
+                            </span>
+                            <span className="truncate text-sm font-medium text-foreground">
+                              {ep.title}
+                            </span>
                           </span>
-                          <span className="truncate text-xs sm:text-sm font-semibold text-foreground">
-                            {ep.title}
-                          </span>
-                        </div>
-                        <i className="fa-solid fa-play text-xs text-primary shrink-0 ml-2" />
-                      </Link>
+                          <Play className="h-4 w-4 shrink-0 text-primary" />
+                        </Link>
+                      </li>
                     );
                   })}
-                </div>
+                </ul>
               )
             ) : (
-              <p className="py-6 text-center text-xs text-muted-foreground">
+              <p className="py-6 text-center text-sm text-muted-foreground">
                 Episode tidak ditemukan.
               </p>
             )}
-          </div>
+          </section>
         </div>
 
-        {/* Right Column: Metadata & Batch & Recommendations */}
-        <div className="space-y-6 lg:col-span-4">
-          {/* Metadata Card */}
-          <div className="rounded-2xl border border-border/80 bg-card p-5 space-y-3 shadow-xs">
-            <h3 className="font-display text-sm font-bold text-foreground border-b border-border/60 pb-2">
-              Informasi Anime
-            </h3>
-
-            <dl className="space-y-2.5 text-xs">
-              {anime.status ? (
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Status</dt>
-                  <dd className="font-semibold text-foreground">{anime.status}</dd>
-                </div>
-              ) : null}
-
-              {anime.aired ? (
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Tanggal Rilis</dt>
-                  <dd className="font-semibold text-foreground">{anime.aired}</dd>
-                </div>
-              ) : null}
-
-              {anime.studio ? (
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Studio</dt>
-                  <dd className="font-semibold text-foreground">{anime.studio}</dd>
-                </div>
-              ) : null}
-
-              {anime.producers ? (
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Produser</dt>
-                  <dd className="font-semibold text-foreground text-right truncate max-w-[180px]">
-                    {anime.producers}
-                  </dd>
-                </div>
-              ) : null}
-
-              {anime.totalEpisodes ? (
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Total Episode</dt>
-                  <dd className="font-semibold text-foreground">{anime.totalEpisodes}</dd>
-                </div>
-              ) : null}
+        <aside className="space-y-10 lg:col-span-4">
+          <section className="space-y-3">
+            <h2 className="section-head font-display text-xl text-foreground">Informasi</h2>
+            <dl className="divide-y divide-border text-sm">
+              {(
+                [
+                  ["Status", anime.status],
+                  ["Rilis", anime.aired],
+                  ["Studio", anime.studio],
+                  ["Produser", anime.producers],
+                  ["Total episode", anime.totalEpisodes],
+                ] as const
+              )
+                .filter(([, value]) => Boolean(value))
+                .map(([label, value]) => (
+                  <div key={label} className="flex justify-between gap-4 py-2.5">
+                    <dt className="text-muted-foreground">{label}</dt>
+                    <dd className="text-right font-medium text-foreground">{value}</dd>
+                  </div>
+                ))}
             </dl>
-          </div>
+          </section>
 
-          {/* Batch Download Widget if Available */}
-          {anime.batch ? (
-            <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-5 space-y-3">
-              <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
-                <i className="fa-solid fa-box-archive" />
-                <span>Download Batch Lengkap</span>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Tersedia paket unduh seluruh episode dalam resolusi 360p, 480p, dan 720p HD.
-              </p>
-              <Link
-                to="/download/$batchId"
-                params={{ batchId: anime.batch.batchId }}
-                className="block w-full text-center rounded-xl bg-emerald-600 text-white py-2 text-xs font-bold hover:bg-emerald-700 transition"
-              >
-                Buka Tautan Batch
-              </Link>
-            </div>
-          ) : null}
-
-          {/* Recommended Anime Widget */}
           {anime.recommended && anime.recommended.length > 0 ? (
-            <div className="rounded-2xl border border-border/80 bg-card p-5 space-y-3 shadow-xs">
-              <h3 className="font-display text-sm font-bold text-foreground border-b border-border/60 pb-2">
-                Rekomendasi Terkait
-              </h3>
-              <div className="grid grid-cols-2 gap-2.5">
+            <section className="space-y-4">
+              <h2 className="section-head font-display text-xl text-foreground">
+                Mirip dengan ini
+              </h2>
+              <div className="grid grid-cols-2 gap-4">
                 {anime.recommended.slice(0, 4).map((rec) => (
-                  <AnimeCard key={rec.id} anime={rec} />
+                  <AnimeCard key={rec.id} anime={rec} showWatchlist={false} />
                 ))}
               </div>
-            </div>
+            </section>
           ) : null}
-        </div>
+        </aside>
       </div>
     </div>
   );
