@@ -23,6 +23,20 @@ export interface SiteUpdateItem {
 
 export const RECENT_SITE_UPDATES: SiteUpdateItem[] = [
   {
+    id: "update-v19",
+    version: "v1.9",
+    title: "Tampilan Baru Lebih Bersih & Notifikasi Anime Baru",
+    description:
+      "Beranda, detail anime, pemutar, dan profil didesain ulang dengan palet Graphite Cyan. Kamu juga mendapat pemberitahuan saat ada anime atau episode baru.",
+    date: "6 Okt 2026",
+    tag: "fitur",
+    changes: [
+      "Tampilan lebih tenang: warna lebih sedikit, kartu lebih ringan, huruf lebih jelas.",
+      "Semua emoji diganti ikon vektor yang konsisten di setiap perangkat.",
+      "Situs memeriksa anime dan episode baru tiap 5 menit, lalu memberi tahu lewat banner, lonceng, dan notifikasi HP.",
+    ],
+  },
+  {
     id: "update-v18",
     version: "v1.8",
     title: "Halaman Notifikasi Baru & Saklar Aktif/Nonaktif",
@@ -183,8 +197,8 @@ export async function enablePhoneNotifications(): Promise<{
     setNotificationPref(true);
 
     // Send welcome confirmation push notification to phone
-    await showLocalNotification("Notifikasi Nontonime Aktif! 🔔", {
-      body: "HP dan browser kamu akan menerima update episode terbaru serta pembaruan website.",
+    await showLocalNotification("Notifikasi Nontonime aktif", {
+      body: "Kamu akan menerima info anime baru, episode terbaru, dan pembaruan situs.",
       tag: "welcome-notification",
     });
 
@@ -211,7 +225,7 @@ export async function enablePhoneNotifications(): Promise<{
 export async function sendTestUpdateNotification(): Promise<boolean> {
   if (!isNotificationActive()) return false;
   const latest = RECENT_SITE_UPDATES[0];
-  return showLocalNotification(`Nontonime Update: ${latest.version} 🚀`, {
+  return showLocalNotification(`Nontonime ${latest.version}`, {
     body: `${latest.title}: ${latest.description}`,
     tag: "test-site-update",
   });
