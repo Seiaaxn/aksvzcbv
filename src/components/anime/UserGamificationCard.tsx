@@ -6,7 +6,7 @@ import {
   hasClaimedToday,
   type UserGamification,
 } from "@/lib/gamification";
-import { Trophy, Sparkles, Check, Gift, Zap, ShieldCheck } from "lucide-react";
+import { Trophy, Sparkles, Check, Gift, Zap, ShieldCheck, ChevronsUp, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function UserGamificationCard({
@@ -45,7 +45,7 @@ export function UserGamificationCard({
   if (compact) {
     return (
       <div className="flex items-center gap-2 rounded-xl border border-border/80 bg-secondary/40 px-3 py-1.5 text-xs">
-        <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary font-black text-primary-foreground text-[11px] shadow-xs">
+        <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary font-black text-primary-foreground text-[11px] ">
           Lv.{data.level}
         </span>
         <div className="flex flex-col">
@@ -67,7 +67,7 @@ export function UserGamificationCard({
   }
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-gradient-to-br from-card via-card/95 to-primary/5 p-5 shadow-sm space-y-4">
+    <div className="relative overflow-hidden rounded-xl border border-border/80 bg-gradient-to-br from-card via-card/95 to-primary/5 p-5  space-y-4">
       {/* Top Bar with Firestore Status */}
       <div className="flex items-center justify-between text-xs pb-1 border-b border-border/40">
         <div className="flex items-center gap-1.5">
@@ -93,8 +93,8 @@ export function UserGamificationCard({
       {/* Header Level, Rank & Daily Check-in */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3.5">
-          <div className="relative flex h-15 w-15 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-primary to-primary/80 font-black text-primary-foreground text-xl shadow-lg shadow-primary/25">
-            <Trophy className="absolute -top-1.5 -right-1.5 h-5 w-5 text-amber-300 drop-shadow-sm" />
+          <div className="relative flex h-15 w-15 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-primary/80 font-black text-primary-foreground text-xl  ">
+            <Trophy className="absolute -top-1.5 -right-1.5 h-5 w-5 text-amber-300 drop-" />
             <span>Lv.{data.level}</span>
           </div>
 
@@ -108,7 +108,7 @@ export function UserGamificationCard({
                 Tier {data.level >= 20 ? "Master" : data.level >= 10 ? "Elit" : "Standard"}
               </span>
             </div>
-            <h3 className="font-display text-lg sm:text-xl font-black text-foreground">
+            <h3 className="font-display text-lg sm:text-xl text-foreground">
               {data.rankTitle}
             </h3>
           </div>
@@ -120,16 +120,16 @@ export function UserGamificationCard({
           onClick={handleClaim}
           disabled={isCheckedInToday}
           className={cn(
-            "inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-bold transition-all shadow-xs cursor-pointer",
+            "inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-all  cursor-pointer",
             isCheckedInToday
               ? "bg-secondary text-muted-foreground border border-border/60 cursor-default"
-              : "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-amber-500/20 hover:scale-102 active:scale-98",
+              : "bg-primary text-primary-foreground  hover:scale-102 active:scale-98",
           )}
         >
           {isCheckedInToday ? (
             <>
               <Check className="h-4 w-4 text-emerald-500" />
-              <span>Sudah Absen ({data.dailyStreak} Hari 🔥)</span>
+              <span className="inline-flex items-center gap-1">Sudah absen ({data.dailyStreak} hari <Flame className="h-3.5 w-3.5" />)</span>
             </>
           ) : (
             <>
@@ -210,18 +210,18 @@ export function ExpNotificationToast() {
 
   return (
     <div className="fixed bottom-20 right-4 z-50 pointer-events-none animate-in slide-in-from-bottom-5 fade-in duration-300">
-      <div className="flex items-center gap-3 rounded-2xl border border-primary/40 bg-background/95 p-3.5 shadow-2xl backdrop-blur-md">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground font-black text-sm shadow-md">
-          {toast.leveledUp ? "🆙" : "⚡"}
+      <div className="flex items-center gap-3 rounded-xl border border-primary/40 bg-background/95 p-3.5  backdrop-blur-md">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground font-black text-sm ">
+          {toast.leveledUp ? <ChevronsUp className="h-5 w-5" /> : <Zap className="h-5 w-5" />}
         </div>
         <div>
           <div className="flex items-center gap-1.5">
-            <span className="text-xs font-extrabold text-primary">+{toast.expGained} EXP!</span>
+            <span className="text-xs font-extrabold text-primary">+{toast.expGained} EXP</span>
             <span className="text-[11px] text-muted-foreground">({toast.reason})</span>
           </div>
           {toast.leveledUp ? (
             <p className="text-xs font-black text-foreground">
-              🎉 LEVEL UP! Sekarang Level {toast.newLevel} ({toast.rankTitle})
+              Naik level. Sekarang Level {toast.newLevel} ({toast.rankTitle})
             </p>
           ) : (
             <p className="text-[11px] text-muted-foreground">
