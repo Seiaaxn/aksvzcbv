@@ -6,25 +6,16 @@ import { Shelf } from "@/components/anime/Shelf";
 import { ErrorState } from "@/components/anime/StateViews";
 import { RecentlyWatchedSection } from "@/components/anime/RecentlyWatchedSection";
 import { homeQuery, currentDayName } from "@/lib/queries";
-import {
-  AlertTriangle,
-  ArrowRight,
-  CalendarDays,
-  CheckCircle2,
-  Film,
-  Flame,
-  History,
-  Play,
-} from "lucide-react";
+import { AlertTriangle, ChevronRight } from "lucide-react";
 import { useAnimeProvider } from "@/lib/provider";
 
 function HomeErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 text-center space-y-4">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-destructive/15 text-destructive border border-destructive/20 shadow-xs">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
         <AlertTriangle className="h-7 w-7" />
       </div>
-      <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">
+      <h2 className="font-display text-xl text-foreground">
         Katalog Sedang Mengalami Kendala Jaringan
       </h2>
       <p className="mx-auto max-w-md text-xs sm:text-sm text-muted-foreground leading-relaxed">
@@ -38,7 +29,7 @@ function HomeErrorComponent({ error, reset }: { error: Error; reset: () => void 
             if (typeof window !== "undefined") window.location.reload();
             else reset();
           }}
-          className="inline-flex h-9 items-center justify-center rounded-xl bg-primary px-5 text-xs font-bold text-primary-foreground shadow-sm hover:bg-primary/90 transition cursor-pointer"
+          className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition cursor-pointer"
         >
           Muat Ulang Halaman
         </button>
@@ -75,7 +66,7 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-// Clean text-only popular genres (strictly no font-awesome icons)
+// Genre populer (teks saja)
 const POPULAR_GENRES = [
   { id: "action", name: "Action" },
   { id: "isekai", name: "Isekai" },
@@ -99,78 +90,60 @@ function HomePage() {
   const todayDay = currentDayName();
 
   return (
-    <div className="mx-auto max-w-7xl space-y-8 sm:space-y-12 px-4 py-4 sm:py-6">
-      {/* Hero Section Loading / Carousel */}
-      {isPending ? (
-        <div className="aspect-[16/9] w-full animate-pulse rounded-2xl sm:rounded-3xl bg-muted/60 sm:aspect-[21/9]" />
-      ) : null}
+    <div className="mx-auto max-w-7xl space-y-10 px-4 py-5 sm:space-y-14 sm:py-8">
+      {isPending ? <div className="aspect-[16/10] w-full animate-pulse rounded-xl bg-muted/60 sm:aspect-[21/9]" /> : null}
 
       {error ? <ErrorState error={error} onRetry={() => refetch()} /> : null}
 
       {data && data.slider.length > 0 ? <HeroSlider items={data.slider.slice(0, 7)} /> : null}
 
-      {/* High-Quality Trending Anime Horizontal Slider */}
+      <RecentlyWatchedSection />
+
+      <Shelf
+        title={`Tayang hari ${todayDay}`}
+        caption="Rilis terbaru sesuai jadwal hari ini"
+        items={data?.today ?? []}
+        isLoading={isPending}
+        viewAllTo="/jadwal"
+      />
+
       {data && (data.hot.length > 0 || data.slider.length > 0) ? (
         <TrendingSlider
           items={data.hot.length > 0 ? data.hot.slice(0, 10) : data.slider.slice(0, 10)}
         />
       ) : null}
 
-      {/* Recently Watched Section */}
-      <RecentlyWatchedSection />
-
-      {/* Popular Genres Quick Navigation Bar */}
-      <section className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="font-display text-base sm:text-lg font-bold tracking-tight text-foreground">
-              Jelajahi Berdasarkan Genre
-            </h2>
-            <p className="text-xs text-muted-foreground">
-              Pilih kategori favorit untuk menemukan anime pilihan terbaik
-            </p>
-          </div>
+      <section className="space-y-4" aria-labelledby="genre-heading">
+        <div className="section-head">
+          <h2 id="genre-heading" className="font-display text-xl text-foreground sm:text-2xl">
+            Jelajahi genre
+          </h2>
           <Link
             to="/genre"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
+            className="inline-flex items-center gap-0.5 text-sm font-semibold text-primary hover:underline"
           >
-            <span>Semua Genre</span>
-            <ArrowRight className="h-3.5 w-3.5" />
+            Semua genre
+            <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
-        <div className="edge-fade no-scrollbar -mx-4 flex items-center gap-2 overflow-x-auto px-4 pb-1">
+        <div className="no-scrollbar -mx-4 flex flex-wrap gap-2 px-4 sm:mx-0 sm:px-0">
           {POPULAR_GENRES.map((g) => (
             <Link
               key={g.id}
               to="/genre/$genreId"
               params={{ genreId: g.id }}
               search={{ page: 1, name: g.name }}
-              className="inline-flex h-8 shrink-0 items-center rounded-lg border border-border/80 bg-card px-3 text-xs font-medium text-foreground transition-colors hover:border-primary/60 hover:bg-secondary hover:text-primary active:scale-95 shadow-2xs"
+              className="inline-flex h-9 items-center rounded-full border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
             >
               {g.name}
             </Link>
           ))}
-          <Link
-            to="/genre"
-            className="inline-flex h-8 shrink-0 items-center rounded-lg border border-dashed border-border bg-secondary/40 px-3 text-xs font-semibold text-muted-foreground transition-colors hover:border-primary hover:text-primary hover:bg-secondary"
-          >
-            +30 Genre Lainnya
-          </Link>
         </div>
       </section>
 
-      {/* Ongoing / Tayang Section */}
       <Shelf
-        title={`Tayang Hari ${todayDay}`}
-        icon={CalendarDays}
-        items={data?.today ?? []}
-        isLoading={isPending}
-        viewAllTo="/jadwal"
-      />
-
-      <Shelf
-        title="Sedang Tayang (Ongoing)"
-        icon={Flame}
+        title="Sedang tayang"
+        caption="Anime ongoing dengan episode terbaru"
         items={data?.hot ?? []}
         isLoading={isPending}
         viewAllTo="/ongoing"
@@ -178,20 +151,15 @@ function HomePage() {
       />
 
       <Shelf
-        title="Anime Tamat Terbaru (Completed)"
-        icon={CheckCircle2}
+        title="Tamat terbaru"
+        caption="Siap ditonton sampai episode terakhir"
         items={data?.popular ?? []}
         isLoading={isPending}
         viewAllTo="/tamat"
         viewAllSearch={{ page: 1 }}
       />
 
-      <Shelf
-        title="Rekomendasi Pilihan"
-        icon={Film}
-        items={data?.new ?? []}
-        isLoading={isPending}
-      />
+      <Shelf title="Rekomendasi" items={data?.new ?? []} isLoading={isPending} />
     </div>
   );
 }
