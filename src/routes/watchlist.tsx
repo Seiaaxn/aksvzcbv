@@ -67,6 +67,7 @@ import {
   LogOut,
   Palette,
   Play,
+  Plus,
   Settings,
   Target,
   Timer,
@@ -182,30 +183,30 @@ function useToday() {
   return today;
 }
 
-const card = "rounded-2xl border border-border/80 bg-card p-3.5 shadow-sm";
+const card = "rounded-xl border border-border/80 bg-card p-3.5 ";
 
 /* ───────── skeleton & signed-out ───────── */
 
 function DashboardSkeleton() {
   return (
     <div className="space-y-4">
-      <div className="h-72 animate-pulse rounded-3xl bg-muted/60" />
-      <div className="h-14 animate-pulse rounded-2xl bg-muted/60" />
-      <div className="h-64 animate-pulse rounded-3xl bg-muted/60" />
+      <div className="h-72 animate-pulse rounded-xl bg-muted/60" />
+      <div className="h-14 animate-pulse rounded-xl bg-muted/60" />
+      <div className="h-64 animate-pulse rounded-xl bg-muted/60" />
     </div>
   );
 }
 
 function SignedOutHero({ onOpenAuth }: { onOpenAuth: (mode: "login" | "register") => void }) {
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-border/80 bg-card shadow-sm">
-      <div className="h-28 bg-gradient-to-br from-amber-400/40 via-amber-400/15 to-transparent" />
+    <section className="relative overflow-hidden rounded-xl border border-border/80 bg-card ">
+      <div className="h-20 bg-secondary" />
       <div className="space-y-5 px-6 pb-7 text-center">
-        <div className="-mt-9 mx-auto flex h-[72px] w-[72px] items-center justify-center rounded-full border-4 border-card bg-amber-400 text-zinc-950 shadow-lg">
+        <div className="-mt-9 mx-auto flex h-[72px] w-[72px] items-center justify-center rounded-full border-4 border-card bg-amber-400 text-zinc-950 ">
           <LogIn className="h-7 w-7" />
         </div>
         <div className="space-y-1.5">
-          <h2 className="font-display text-base font-black text-foreground">
+          <h2 className="font-display text-base  text-foreground">
             Masuk ke Profil Nontonime
           </h2>
           <p className="mx-auto max-w-md text-[11px] leading-relaxed text-muted-foreground">
@@ -306,7 +307,7 @@ function ProfileHero({
           >
             <ArrowLeft className="h-4 w-4" />
           </button>
-          <h1 className="font-display text-xs font-black text-foreground">Profil Pengguna</h1>
+          <h1 className="font-display text-xs  text-foreground">Profil Pengguna</h1>
           <div className="flex gap-1.5">
             <button
               type="button"
@@ -335,7 +336,7 @@ function ProfileHero({
             size={76}
             level={gamification.level}
           />
-          <h2 className="mt-4 max-w-full break-words font-display text-base font-black text-foreground">
+          <h2 className="mt-4 max-w-full break-words font-display text-base  text-foreground">
             {name}
           </h2>
           {prefs.showTitle ? <TitleChip name={title.name} className="mt-0.5" /> : null}
@@ -355,7 +356,7 @@ function ProfileHero({
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-secondary">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500 transition-[width] duration-500"
+              className="h-full rounded-full bg-primary transition-[width] duration-500"
               style={{ width: `${pct}%` }}
             />
           </div>
@@ -369,7 +370,7 @@ function ProfileHero({
             >
               <p
                 className={cn(
-                  "font-display text-xs font-black",
+                  "font-display text-xs ",
                   s.accent ? "text-amber-500" : "text-foreground",
                 )}
               >
@@ -404,7 +405,7 @@ function TabBar({
     <div
       role="tablist"
       aria-label="Bagian profil"
-      className="grid grid-cols-3 gap-1 rounded-2xl border border-border/80 bg-card p-1"
+      className="grid grid-cols-3 gap-1 rounded-xl border border-border/80 bg-card p-1"
     >
       {tabs.map((t) => {
         const Icon = t.icon;
@@ -455,11 +456,11 @@ function ActiveTimeCard({ uid }: { uid: string }) {
     <section className={cn(card, "space-y-4")}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-amber-400/15 text-amber-500">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/15 text-amber-500">
             <Timer className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="font-display text-xs font-black uppercase text-foreground">
+            <h3 className="font-display text-xs  uppercase text-foreground">
               Jam Aktif
             </h3>
             <p className="text-[11px] text-muted-foreground">
@@ -493,7 +494,7 @@ function ActiveTimeCard({ uid }: { uid: string }) {
         ].map((x) => {
           const Icon = x.icon;
           return (
-            <div key={x.label} className="rounded-2xl border border-border/70 bg-secondary/40 p-3">
+            <div key={x.label} className="rounded-xl border border-border/70 bg-secondary/40 p-3">
               <p className="flex items-center gap-1 text-[10px] font-bold uppercase text-muted-foreground">
                 <Icon className="h-3 w-3" />
                 {x.label}
@@ -504,7 +505,7 @@ function ActiveTimeCard({ uid }: { uid: string }) {
         })}
       </div>
 
-      <div className="space-y-2 rounded-2xl border border-border/70 bg-secondary/40 p-3.5">
+      <div className="space-y-2 rounded-xl border border-border/70 bg-secondary/40 p-3.5">
         <div className="flex items-center justify-between text-[11px]">
           <span className="font-bold text-foreground">Target aktif hari ini</span>
           <span className="font-mono font-bold text-emerald-500">
@@ -513,7 +514,7 @@ function ActiveTimeCard({ uid }: { uid: string }) {
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-background">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-amber-400 to-emerald-500 transition-[width] duration-500"
+            className="h-full rounded-full bg-primary transition-[width] duration-500"
             style={{ width: `${pct}%` }}
           />
         </div>
@@ -536,7 +537,7 @@ function QuickLinks({
   onClaim: () => void;
 }) {
   const rowCls =
-    "flex min-h-12 items-center gap-3 rounded-2xl px-1.5 py-2 text-left transition-colors hover:bg-secondary/40";
+    "flex min-h-12 items-center gap-3 rounded-xl px-1.5 py-2 text-left transition-colors hover:bg-secondary/40";
   const iconCls = "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border";
 
   // Segarkan hitung mundur klaim berikutnya.
@@ -655,7 +656,7 @@ function AccountDetails({
       <h2 className="px-1 text-[10px] font-black uppercase tracking-wider text-muted-foreground">
         Detail Informasi Akun
       </h2>
-      <div className="divide-y divide-border/60 rounded-3xl border border-border/80 bg-card px-5 shadow-sm">
+      <div className="divide-y divide-border/60 rounded-xl border border-border/80 bg-card px-5 ">
         {rows.map((r) => (
           <div key={r.label} className="py-3.5">
             <p className="text-[11px] text-muted-foreground">{r.label}</p>
@@ -709,7 +710,7 @@ function NotificationCard() {
   }
 
   return (
-    <div className="space-y-4 rounded-3xl border border-border/80 bg-card p-5 shadow-sm">
+    <div className="space-y-4 rounded-xl border border-border/80 bg-card p-5 ">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
@@ -785,7 +786,7 @@ function SettingsSection({ onEditProfile }: { onEditProfile?: () => void }) {
         <button
           type="button"
           onClick={onEditProfile}
-          className="flex w-full cursor-pointer items-center justify-between gap-4 rounded-3xl border border-border/80 bg-card p-5 text-left shadow-sm transition-colors hover:bg-secondary/40"
+          className="flex w-full cursor-pointer items-center justify-between gap-4 rounded-xl border border-border/80 bg-card p-5 text-left  transition-colors hover:bg-secondary/40"
         >
           <span className="flex items-center gap-3">
             <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-400/15 text-amber-500">
@@ -801,7 +802,7 @@ function SettingsSection({ onEditProfile }: { onEditProfile?: () => void }) {
           <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
         </button>
       ) : null}
-      <div className="flex items-center justify-between gap-4 rounded-3xl border border-border/80 bg-card p-5 shadow-sm">
+      <div className="flex items-center justify-between gap-4 rounded-xl border border-border/80 bg-card p-5 ">
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-400/15 text-amber-500">
             <Palette className="h-4 w-4" />
@@ -839,12 +840,13 @@ function ContinueWatching({ history }: { history: HistoryItem[] }) {
   return (
     <section className={cn(card, "space-y-3")}>
       <div className="flex items-center justify-between gap-3">
-        <h3 className="flex items-center gap-2 font-display text-xs font-black uppercase text-foreground">
+        <h3 className="flex items-center gap-2 font-display text-xs  uppercase text-foreground">
           <Play className="h-3.5 w-3.5 fill-purple-400 text-purple-400" />
           Lanjutkan Nonton
         </h3>
-        <Link to="/riwayat" className="text-[11px] font-bold text-amber-500 hover:underline">
-          Semua Riwayat →
+        <Link to="/riwayat" className="text-xs font-semibold text-primary hover:underline">
+          Semua riwayat
+          <ChevronRight className="inline h-3 w-3" />
         </Link>
       </div>
 
@@ -858,7 +860,7 @@ function ContinueWatching({ history }: { history: HistoryItem[] }) {
                 to="/watch/$episodeId"
                 params={{ episodeId: item.episodeId }}
                 search={{ a: item.animeId, autoplay: false }}
-                className="flex gap-3 rounded-2xl border border-border/70 bg-background/40 p-3 transition-colors hover:bg-secondary/40"
+                className="flex gap-3 rounded-xl border border-border/70 bg-background/40 p-3 transition-colors hover:bg-secondary/40"
               >
                 {item.poster ? (
                   <img
@@ -911,7 +913,7 @@ function MissionRow({ mission }: { mission: Mission }) {
   return (
     <div
       className={cn(
-        "rounded-2xl border p-3.5",
+        "rounded-xl border p-3.5",
         done ? "border-emerald-500/40 bg-emerald-500/10" : "border-border/70 bg-background/40",
       )}
     >
@@ -943,7 +945,7 @@ function MissionRow({ mission }: { mission: Mission }) {
                   done ? "bg-emerald-500/15 text-emerald-500" : "bg-amber-500/15 text-amber-500",
                 )}
               >
-                {done ? "✓" : "+"}
+                {done ? <Check className="mr-0.5 inline h-3 w-3" /> : <Plus className="mr-0.5 inline h-3 w-3" />}
                 {mission.reward} EXP
               </span>
             ) : null}
@@ -985,11 +987,11 @@ function MissionsCard({ daily, weekly }: { daily: Mission[]; weekly: Mission[] }
     <section className={cn(card, "space-y-4")}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-500">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-500">
             <Target className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="font-display text-xs font-black uppercase text-foreground">
+            <h3 className="font-display text-xs  uppercase text-foreground">
               Misi & Tantangan
             </h3>
             <p className="flex items-center gap-1 text-[11px] text-muted-foreground">
@@ -1027,7 +1029,7 @@ function MissionsCard({ daily, weekly }: { daily: Mission[]; weekly: Mission[] }
         {period === "harian" ? (
           <div
             className={cn(
-              "flex items-center gap-3 rounded-2xl border border-dashed p-3.5",
+              "flex items-center gap-3 rounded-xl border border-dashed p-3.5",
               allDailyDone ? "border-emerald-500/50 bg-emerald-500/10" : "border-border",
             )}
           >
@@ -1060,11 +1062,11 @@ function CosmeticsEntryCard({ onOpen }: { onOpen: () => void }) {
         "flex w-full cursor-pointer items-center gap-3 text-left transition-colors hover:bg-secondary/40",
       )}
     >
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-amber-400/15 text-amber-500">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/15 text-amber-500">
         <Palette className="h-4 w-4" />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-display text-xs font-black uppercase text-foreground">
+        <span className="block font-display text-xs  uppercase text-foreground">
           Koleksi &amp; Kosmetik
         </span>
         <span className="block text-[11px] text-muted-foreground">
@@ -1085,7 +1087,7 @@ function LevelCard({ gamification }: { gamification: UserGamification }) {
   return (
     <section className={cn(card, "space-y-3")}>
       <div className="flex items-center justify-between">
-        <h3 className="flex items-center gap-2 font-display text-xs font-black uppercase text-foreground">
+        <h3 className="flex items-center gap-2 font-display text-xs  uppercase text-foreground">
           <Trophy className="h-3.5 w-3.5 text-amber-500" />
           Level Komunitas
         </h3>
@@ -1148,7 +1150,7 @@ function AchievementsCard({ achievements }: { achievements: Achievement[] }) {
   return (
     <section className={cn(card, "space-y-3")}>
       <div className="flex items-center justify-between">
-        <h3 className="flex items-center gap-2 font-display text-xs font-black uppercase text-foreground">
+        <h3 className="flex items-center gap-2 font-display text-xs  uppercase text-foreground">
           <Award className="h-3.5 w-3.5 text-amber-500" />
           Pencapaian
         </h3>
@@ -1158,7 +1160,7 @@ function AchievementsCard({ achievements }: { achievements: Achievement[] }) {
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-secondary">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-amber-400 to-emerald-500 transition-[width] duration-500"
+          className="h-full rounded-full bg-primary transition-[width] duration-500"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -1188,7 +1190,7 @@ function AchievementsCard({ achievements }: { achievements: Achievement[] }) {
             <li
               key={a.id}
               className={cn(
-                "flex items-start gap-3 rounded-2xl border border-l-4 p-3",
+                "flex items-start gap-3 rounded-xl border border-l-4 p-3",
                 RARITY_META[a.rarity].edge,
                 a.done ? "border-amber-500/40 bg-amber-500/10" : "border-border/70",
               )}
@@ -1387,7 +1389,7 @@ function SignedInDashboard({ user }: { user: User }) {
       {claimMsg ? (
         <div
           role="status"
-          className="rounded-2xl border border-amber-500/30 bg-amber-500/15 p-3 text-[11px] font-medium text-amber-700 dark:text-amber-300"
+          className="rounded-xl border border-amber-500/30 bg-amber-500/15 p-3 text-[11px] font-medium text-amber-700 dark:text-amber-300"
         >
           {claimMsg}
         </div>
@@ -1414,7 +1416,7 @@ function SignedInDashboard({ user }: { user: User }) {
           <button
             type="button"
             onClick={handleLogout}
-            className="inline-flex min-h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border border-border/80 bg-card px-4 text-xs font-bold text-muted-foreground transition-colors hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
+            className="inline-flex min-h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-border/80 bg-card px-4 text-xs font-bold text-muted-foreground transition-colors hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
           >
             <LogOut className="h-3.5 w-3.5" />
             <span>Keluar</span>
