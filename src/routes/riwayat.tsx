@@ -62,7 +62,7 @@ function dayLabel(value: number) {
 function getOtakuRank(episodesCount: number) {
   if (episodesCount >= 50) {
     return {
-      title: "Sultan Marathon 👑",
+      title: "Sultan Marathon",
       level: "Legenda",
       progress: 100,
       next: "Puncak Pencapaian!",
@@ -70,7 +70,7 @@ function getOtakuRank(episodesCount: number) {
   }
   if (episodesCount >= 20) {
     return {
-      title: "Binge Watcher Sejati 🌟",
+      title: "Binge Watcher Sejati",
       level: "Mahir",
       progress: Math.min(100, Math.round(((episodesCount - 20) / 30) * 100)),
       next: `${50 - episodesCount} episode lagi ke Sultan Marathon`,
@@ -78,14 +78,14 @@ function getOtakuRank(episodesCount: number) {
   }
   if (episodesCount >= 5) {
     return {
-      title: "Penggemar Anime ⚡",
+      title: "Penggemar Anime",
       level: "Menengah",
       progress: Math.min(100, Math.round(((episodesCount - 5) / 15) * 100)),
       next: `${20 - episodesCount} episode lagi ke Binge Watcher`,
     };
   }
   return {
-    title: "Penonton Santai 🍿",
+    title: "Penonton Santai",
     level: "Pemula",
     progress: Math.min(100, Math.round((episodesCount / 5) * 100)),
     next: `${5 - episodesCount} episode lagi ke Penggemar Anime`,
@@ -178,7 +178,7 @@ function HistoryContent() {
 
       {/* Watch Statistics Card */}
       {items.length > 0 ? (
-        <div className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 shadow-xs space-y-4">
+        <div className="rounded-xl border border-border/80 bg-card p-4 sm:p-5  space-y-4">
           <div className="flex items-center justify-between border-b border-border/60 pb-3">
             <div className="flex items-center gap-2">
               <Trophy className="h-4 w-4 text-amber-500" />
@@ -197,7 +197,7 @@ function HistoryContent() {
                 <Tv className="h-3.5 w-3.5 text-blue-500" />
                 <span>Episode Ditonton</span>
               </div>
-              <p className="font-display text-lg sm:text-xl font-extrabold text-foreground">
+              <p className="font-display text-lg sm:text-xl text-foreground">
                 {stats.totalEpisodes}
               </p>
             </div>
@@ -207,7 +207,7 @@ function HistoryContent() {
                 <Hourglass className="h-3.5 w-3.5 text-emerald-500" />
                 <span>Total Waktu</span>
               </div>
-              <p className="font-display text-lg sm:text-xl font-extrabold text-foreground">
+              <p className="font-display text-lg sm:text-xl text-foreground">
                 {stats.formattedTime}
               </p>
             </div>
@@ -217,7 +217,7 @@ function HistoryContent() {
                 <Flame className="h-3.5 w-3.5 text-orange-500" />
                 <span>Judul Anime</span>
               </div>
-              <p className="font-display text-lg sm:text-xl font-extrabold text-foreground">
+              <p className="font-display text-lg sm:text-xl text-foreground">
                 {stats.uniqueAnimes}
               </p>
             </div>
@@ -264,11 +264,11 @@ function HistoryContent() {
 
       {/* Main List */}
       {items.length === 0 ? (
-        <div className="rounded-3xl border border-border/80 bg-card/60 px-6 py-16 text-center space-y-3 backdrop-blur-xs">
-          <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-2xl bg-primary/10 text-primary">
+        <div className="rounded-xl border border-border/80 bg-card/60 px-6 py-16 text-center space-y-3 backdrop-blur-xs">
+          <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-xl bg-primary/10 text-primary">
             <Clock className="h-6 w-6" />
           </div>
-          <h3 className="font-display text-base font-bold text-foreground">
+          <h3 className="font-display text-base text-foreground">
             Belum ada riwayat tontonan
           </h3>
           <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
@@ -278,7 +278,7 @@ function HistoryContent() {
           <div className="pt-2">
             <Link
               to="/"
-              className="press-soft inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-sm hover:bg-primary/90"
+              className="press-soft inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground  hover:bg-primary/90"
             >
               <Play className="h-3.5 w-3.5 fill-current" />
               Mulai Nonton Anime
@@ -286,7 +286,7 @@ function HistoryContent() {
           </div>
         </div>
       ) : filteredItems.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border/80 p-8 text-center space-y-2">
+        <div className="rounded-xl border border-dashed border-border/80 p-8 text-center space-y-2">
           <p className="text-xs font-semibold text-foreground">
             Tidak ada anime yang cocok dengan &quot;{searchFilter}&quot;
           </p>
@@ -305,7 +305,7 @@ function HistoryContent() {
               <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 {label} ({group.length})
               </h3>
-              <ul className="divide-y divide-border/60 overflow-hidden rounded-2xl border border-border/80 bg-card shadow-xs">
+              <ul className="divide-y divide-border/60 overflow-hidden rounded-xl border border-border/80 bg-card ">
                 {group.map((item) => (
                   <li
                     key={`${item.episodeId}-${item.watchedAt}`}
@@ -321,7 +321,7 @@ function HistoryContent() {
                         <img
                           src={item.poster}
                           alt={item.animeTitle}
-                          className="h-14 w-10 rounded-lg object-cover bg-muted shrink-0 shadow-xs"
+                          className="h-14 w-10 rounded-lg object-cover bg-muted shrink-0 "
                           loading="lazy"
                         />
                       ) : (
