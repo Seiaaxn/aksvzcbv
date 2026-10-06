@@ -3,18 +3,18 @@ import { Link } from "@tanstack/react-router";
 import type { AnimeSummary } from "@/lib/anime-types";
 import { AnimeCard } from "./AnimeCard";
 import { RowSkeleton } from "./StateViews";
-import { ArrowRight, ChevronLeft, ChevronRight, type LucideIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export function Shelf({
   title,
-  icon: IconProp,
+  caption,
   items,
   isLoading,
   viewAllTo,
   viewAllSearch,
 }: {
   title: string;
-  icon?: LucideIcon | React.ComponentType<{ className?: string }>;
+  caption?: string;
   items: AnimeSummary[];
   isLoading?: boolean;
   viewAllTo?: string;
@@ -25,44 +25,36 @@ export function Shelf({
   if (!isLoading && items.length === 0) return null;
 
   const scroll = (direction: "left" | "right") => {
-    if (scrollRef.current) {
-      const offset = direction === "left" ? -480 : 480;
-      scrollRef.current.scrollBy({ left: offset, behavior: "smooth" });
-    }
+    scrollRef.current?.scrollBy({
+      left: direction === "left" ? -520 : 520,
+      behavior: "smooth",
+    });
   };
 
-  const IconComp = IconProp as React.ElementType | undefined;
-
   return (
-    <section className="relative z-10 space-y-4 my-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          {IconComp ? (
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20 shadow-xs shrink-0">
-              <IconComp className="h-4 w-4 text-primary" />
-            </span>
-          ) : null}
-          <h2 className="font-display text-lg font-bold tracking-tight text-foreground sm:text-xl">
-            {title}
-          </h2>
+    <section className="space-y-4">
+      <div className="section-head">
+        <div className="min-w-0">
+          <h2 className="font-display text-xl text-foreground sm:text-2xl">{title}</h2>
+          {caption ? <p className="mt-1 text-sm text-muted-foreground">{caption}</p> : null}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5">
           {viewAllTo ? (
             <Link
               to={viewAllTo as never}
               search={viewAllSearch as never}
-              className="group inline-flex items-center gap-1 text-xs font-semibold text-primary transition-colors hover:text-primary/80 sm:text-sm"
+              className="inline-flex items-center gap-0.5 text-sm font-semibold text-primary hover:underline"
             >
-              <span>Lihat semua</span>
-              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              Lihat semua
+              <ChevronRight className="h-4 w-4" />
             </Link>
           ) : null}
-          <div className="hidden items-center gap-1 sm:flex">
+          <div className="ml-2 hidden items-center gap-1 sm:flex">
             <button
               type="button"
               onClick={() => scroll("left")}
               aria-label="Gulir ke kiri"
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-border/80 bg-secondary/50 text-foreground transition hover:bg-secondary active:scale-95"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition hover:bg-secondary hover:text-foreground"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
@@ -70,7 +62,7 @@ export function Shelf({
               type="button"
               onClick={() => scroll("right")}
               aria-label="Gulir ke kanan"
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-border/80 bg-secondary/50 text-foreground transition hover:bg-secondary active:scale-95"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition hover:bg-secondary hover:text-foreground"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -83,10 +75,10 @@ export function Shelf({
       ) : (
         <div
           ref={scrollRef}
-          className="edge-fade no-scrollbar -mx-4 flex gap-3.5 overflow-x-auto overscroll-x-contain scroll-smooth px-4 pt-1 pb-4 items-stretch"
+          className="no-scrollbar -mx-4 flex items-stretch gap-4 overflow-x-auto overscroll-x-contain scroll-smooth px-4 pb-2"
         >
           {items.map((anime) => (
-            <div key={anime.id} className="w-38 shrink-0 sm:w-44 flex flex-col">
+            <div key={anime.id} className="flex w-[8.75rem] shrink-0 flex-col sm:w-44">
               <AnimeCard anime={anime} showWatchlist={false} />
             </div>
           ))}
