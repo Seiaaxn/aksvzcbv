@@ -105,7 +105,7 @@ export function WatchingList({
               <Play className="h-4 w-4 fill-current ml-0.5" />
             </div>
             <div>
-              <h3 className="font-display text-sm font-bold text-foreground flex items-center gap-2">
+              <h3 className="font-display text-sm text-foreground flex items-center gap-2">
                 <span>Daftar Progres Anime</span>
                 {user ? (
                   <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
@@ -136,7 +136,7 @@ export function WatchingList({
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold whitespace-nowrap transition-all cursor-pointer",
                 activeStatus === "watching"
-                  ? "bg-primary text-primary-foreground shadow-xs"
+                  ? "bg-primary text-primary-foreground "
                   : "bg-secondary/70 text-muted-foreground hover:bg-secondary hover:text-foreground",
               )}
             >
@@ -153,7 +153,7 @@ export function WatchingList({
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold whitespace-nowrap transition-all cursor-pointer",
                 activeStatus === "plan"
-                  ? "bg-primary text-primary-foreground shadow-xs"
+                  ? "bg-primary text-primary-foreground "
                   : "bg-secondary/70 text-muted-foreground hover:bg-secondary hover:text-foreground",
               )}
             >
@@ -170,7 +170,7 @@ export function WatchingList({
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold whitespace-nowrap transition-all cursor-pointer",
                 activeStatus === "completed"
-                  ? "bg-primary text-primary-foreground shadow-xs"
+                  ? "bg-primary text-primary-foreground "
                   : "bg-secondary/70 text-muted-foreground hover:bg-secondary hover:text-foreground",
               )}
             >
@@ -187,7 +187,7 @@ export function WatchingList({
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-xs font-bold whitespace-nowrap transition-all cursor-pointer",
                 activeStatus === "all"
-                  ? "bg-primary text-primary-foreground shadow-xs"
+                  ? "bg-primary text-primary-foreground "
                   : "bg-secondary/50 text-muted-foreground hover:bg-secondary",
               )}
             >
@@ -221,7 +221,7 @@ export function WatchingList({
 
       {/* Empty State */}
       {!firestoreLoading && filteredItems.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border/80 p-8 text-center space-y-3 bg-card/40">
+        <div className="rounded-xl border border-dashed border-border/80 p-8 text-center space-y-3 bg-card/40">
           <div className="flex h-10 w-10 mx-auto items-center justify-center rounded-xl bg-primary/10 text-primary">
             {activeStatus === "completed" ? (
               <CheckCircle2 className="h-5 w-5" />
@@ -250,7 +250,7 @@ export function WatchingList({
           <div className="pt-1">
             <Link
               to="/"
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-bold text-primary-foreground hover:bg-primary/90 transition-all shadow-xs"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-bold text-primary-foreground hover:bg-primary/90 transition-all "
             >
               <Film className="h-3 w-3" />
               <span>Jelajahi Anime</span>
@@ -272,7 +272,7 @@ export function WatchingList({
             return (
               <div
                 key={item.animeId}
-                className="group relative overflow-hidden rounded-2xl border border-border/80 bg-card p-3.5 shadow-xs transition-all hover:border-primary/40 hover:shadow-sm"
+                className="group relative overflow-hidden rounded-xl border border-border/80 bg-card p-3.5  transition-all hover:border-primary/40 hover:"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3.5">
                   {/* Poster Thumbnail */}
@@ -294,7 +294,7 @@ export function WatchingList({
                       </div>
                     )}
                     <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <ExternalLink className="h-4 w-4 text-white drop-shadow-sm" />
+                      <ExternalLink className="h-4 w-4 text-white drop-" />
                     </div>
                   </Link>
 
@@ -305,7 +305,7 @@ export function WatchingList({
                         <Link
                           to="/anime/$animeId"
                           params={{ animeId: item.animeId }}
-                          className="font-display text-sm font-bold text-foreground hover:text-primary transition-colors line-clamp-1"
+                          className="font-display text-sm text-foreground hover:text-primary transition-colors line-clamp-1"
                         >
                           {item.title}
                         </Link>
@@ -322,10 +322,10 @@ export function WatchingList({
                             )}
                           >
                             {currentStatus === "watching"
-                              ? "▶ Sedang Ditonton"
+                              ? "Sedang ditonton"
                               : currentStatus === "completed"
-                                ? "✓ Tamat (Completed)"
-                                : "⏳ Rencana (Planning)"}
+                                ? "Tamat"
+                                : "Rencana"}
                           </span>
 
                           <span className="text-[11px] text-muted-foreground">
