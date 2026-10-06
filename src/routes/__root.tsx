@@ -15,6 +15,8 @@ import { BottomNav } from "../components/anime/BottomNav";
 import { ExpNotificationToast } from "../components/anime/UserGamificationCard";
 import { ActiveTimeTracker } from "../components/anime/ActiveTimeTracker";
 import { DailyClaimDialog } from "../components/anime/DailyClaimDialog";
+import { NewAnimeNotifier } from "../components/anime/NewAnimeNotifier";
+import { Toaster } from "../components/ui/sonner";
 import { siteConfig } from "../lib/site-config";
 
 function NotFoundComponent() {
@@ -121,7 +123,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: siteConfig.name },
       { name: "twitter:description", content: siteConfig.description },
       { name: "twitter:image", content: `${siteConfig.siteUrl}${siteConfig.ogImage}` },
-      { name: "theme-color", content: "#0B0D14" },
+      { name: "theme-color", content: "#14181C" },
     ],
     links: [
       {
@@ -134,7 +136,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600;700&display=swap",
       },
     ],
   }),
@@ -178,6 +180,8 @@ function RootComponent() {
         <ExpNotificationToast />
         <DailyClaimDialog />
         <ActiveTimeTracker />
+        <NewAnimeNotifier />
+        <Toaster position="top-center" />
       </div>
     </QueryClientProvider>
   );
