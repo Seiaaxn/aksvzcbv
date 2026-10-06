@@ -2,7 +2,7 @@ import { useState, useEffect, memo } from "react";
 import { Link } from "@tanstack/react-router";
 import type { AnimeSummary } from "@/lib/anime-types";
 import { cn } from "@/lib/utils";
-import { CheckCircle2, Film, Layers, Play, Star, Info, Check } from "lucide-react";
+import { Check, Film, Info, Star } from "lucide-react";
 import { WatchlistButton } from "./WatchlistButton";
 import { AnimeQuickPreviewModal } from "./AnimeQuickPreviewModal";
 import { readHistory, type HistoryItem } from "@/lib/history";
@@ -18,7 +18,7 @@ export const AnimeCard = memo(function AnimeCard({
 }) {
   const [imgError, setImgError] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
-  // Modal preview baru dipasang setelah pertama kali dibuka (hemat ratusan komponen di grid)
+  // Modal pratinjau baru dipasang setelah pertama kali dibuka (hemat ratusan komponen di grid)
   const [previewMounted, setPreviewMounted] = useState(false);
   const [historyItem, setHistoryItem] = useState<HistoryItem | null>(null);
 
@@ -26,18 +26,13 @@ export const AnimeCard = memo(function AnimeCard({
   const isCompleted = /tamat|complete/i.test(anime.status ?? "");
 
   useEffect(() => {
-    const list = readHistory();
-    const found = list.find((h) => h.animeId === anime.id);
+    const found = readHistory().find((h) => h.animeId === anime.id);
     setHistoryItem(found ?? null);
   }, [anime.id]);
 
-  const episodeLabel = anime.episodeCount
-    ? `${anime.episodeCount} Eps`
-    : isOngoing
-      ? "Ongoing"
-      : null;
+  const episodeLabel = anime.episodeCount ? `Eps ${anime.episodeCount}` : null;
 
-  const subtitle = [
+  const meta = [
     anime.type || "TV",
     anime.releaseDay || anime.day || anime.latestReleaseDate || (isCompleted ? "Tamat" : null),
   ]
@@ -46,12 +41,12 @@ export const AnimeCard = memo(function AnimeCard({
 
   return (
     <>
-      <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-xl sm:rounded-2xl border border-border/80 bg-card shadow-xs transition-[border-color,box-shadow] duration-300 hover:border-primary/50 hover:shadow-xl isolate">
-        {/* Main Clickable Poster & Link */}
+      <div className="group relative flex h-full flex-col gap-2.5">
+        <div className="relative">
         <Link
           to="/anime/$animeId"
           params={{ animeId: anime.id }}
-          className="relative aspect-[2/3] w-full overflow-hidden bg-muted/60 block"
+          className="relative block aspect-[2/3] w-full overflow-hidden rounded-lg bg-muted ring-1 ring-border/70 transition-shadow group-hover:ring-primary/60"
         >
           {anime.poster && !imgError ? (
             <img
@@ -60,140 +55,92 @@ export const AnimeCard = memo(function AnimeCard({
               loading="lazy"
               decoding="async"
               onError={() => setImgError(true)}
-              className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+              className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
             />
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center gap-2 p-3 text-center text-muted-foreground">
-              <Film className="h-6 w-6 text-muted-foreground/40" />
-              <span className="line-clamp-2 text-xs font-medium leading-tight">{anime.title}</span>
+              <Film className="h-6 w-6 opacity-40" />
+              <span className="line-clamp-2 text-xs leading-tight">{anime.title}</span>
             </div>
           )}
 
-          {/* Cinematic gradient overlay */}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent opacity-70 transition-opacity duration-300 group-hover:opacity-90" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/70 to-transparent" />
 
-          {/* Hover quick play icon */}
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/95 text-primary-foreground shadow-lg shadow-primary/40">
-              <Play className="h-4 w-4 fill-current ml-0.5" />
-            </div>
-          </div>
+          {/* Status: satu penanda kecil saja */}
+          {isOngoing ? (
+            <span className="absolute left-2 top-2 inline-flex items-center gap-1.5 rounded-md bg-black/70 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+              Ongoing
+            </span>
+          ) : null}
 
-          {/* Top Badges and Action Row */}
-          <div className="absolute top-2 inset-x-2 flex items-start justify-between gap-1.5 z-10 pointer-events-none">
-            {/* Status badge */}
-            <div className="flex flex-col gap-1 items-start">
-              {isOngoing ? (
-                <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500 px-1.5 py-0.5 text-[10px] font-bold text-white shadow-xs">
-                  <span className="h-1.5 w-1.5 rounded-full bg-white" />
-                  ONGOING
-                </span>
-              ) : isCompleted ? (
-                <span className="inline-flex items-center gap-1 rounded-md bg-sky-600 px-1.5 py-0.5 text-[10px] font-bold text-white shadow-xs">
-                  <CheckCircle2 className="h-2.5 w-2.5" />
-                  TAMAT
-                </span>
-              ) : null}
-            </div>
+          {episodeLabel ? (
+            <span className="absolute bottom-2 left-2 text-[11px] font-semibold text-white">
+              {episodeLabel}
+            </span>
+          ) : null}
 
-            {/* Right: Score + Spring Watchlist Toggle Button */}
-            <div className="flex items-center gap-1 pointer-events-auto">
-              {anime.score ? (
-                <span className="inline-flex items-center gap-1 rounded-md bg-black/75 px-1.5 py-0.5 text-[10px] font-bold text-amber-300 shadow-xs pointer-events-none">
-                  <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
-                  {anime.score}
-                </span>
-              ) : null}
-
-              {showWatchlist ? (
-                <WatchlistButton
-                  animeId={anime.id}
-                  title={anime.title}
-                  poster={anime.poster}
-                  variant="card-overlay"
-                  size="sm"
-                />
-              ) : null}
-            </div>
-          </div>
-
-          {/* Bottom episode pill & Watched Progress indicator */}
-          <div className="absolute bottom-2 inset-x-2 flex items-end justify-between gap-1 pointer-events-none z-10">
-            {episodeLabel ? (
-              <span className="inline-flex items-center gap-1 rounded-md bg-black/75 px-1.5 py-0.5 text-[10px] font-semibold text-white/95">
-                <Layers className="h-2.5 w-2.5 text-primary" />
-                {episodeLabel}
-              </span>
-            ) : (
-              <span />
-            )}
-
-            {/* If watched in history, show badge */}
-            {historyItem ? (
-              <span className="inline-flex items-center gap-1 rounded-md bg-primary/90 px-1.5 py-0.5 text-[9px] font-bold text-primary-foreground shadow-xs">
-                <Check className="h-2.5 w-2.5 stroke-[3]" />
+          {historyItem ? (
+            <>
+              <span className="absolute bottom-2 right-2 inline-flex items-center gap-1 text-[10px] font-semibold text-white">
+                <Check className="h-3 w-3 text-primary" strokeWidth={3} />
                 Ditonton
               </span>
-            ) : null}
-          </div>
-
-          {/* Red Progress Bar at bottom edge if watched */}
-          {historyItem ? (
-            <div className="absolute bottom-0 inset-x-0 h-1 bg-muted/40">
-              <div className="h-full w-full bg-primary" />
-            </div>
+              <span className="absolute inset-x-0 bottom-0 h-0.5 bg-primary" />
+            </>
           ) : null}
         </Link>
 
-        {/* Card Info & Quick Preview Action */}
-        <div className="flex flex-1 flex-col justify-between p-2.5 sm:p-3 bg-card">
-          <div className="space-y-1">
-            <Link to="/anime/$animeId" params={{ animeId: anime.id }} className="block group/title">
-              <h3
-                className={cn(
-                  "line-clamp-2 font-display text-xs font-bold leading-snug text-card-foreground transition-colors group-hover/title:text-primary sm:text-sm min-h-[2.25rem] sm:min-h-[2.5rem]",
-                  featured && "text-sm sm:text-base min-h-[2.5rem]",
-                )}
-                title={anime.title}
-              >
-                {anime.title}
-              </h3>
-            </Link>
-
-            <p className="truncate text-[11px] font-medium text-muted-foreground">
-              {subtitle || "Anime Sub Indo"}
-            </p>
+        {showWatchlist ? (
+          <div className="absolute right-2 top-2 z-10">
+            <WatchlistButton
+              animeId={anime.id}
+              title={anime.title}
+              poster={anime.poster}
+              variant="card-overlay"
+              size="sm"
+            />
           </div>
+        ) : null}
 
-          {/* Bottom quick preview trigger row */}
-          <div className="mt-2.5 pt-2 border-t border-border/40 flex items-center justify-between gap-1">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setPreviewMounted(true);
-                setPreviewOpen(true);
-              }}
-              title="Pratinjau Cepat Anime"
-              className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-primary transition-colors cursor-pointer"
-            >
-              <Info className="h-3 w-3" />
-              <span>Pratinjau</span>
-            </button>
+        {/* Pratinjau cepat: hanya muncul saat hover di desktop */}
+        <button
+          type="button"
+          onClick={() => {
+            setPreviewMounted(true);
+            setPreviewOpen(true);
+          }}
+          aria-label={`Pratinjau ${anime.title}`}
+          className="absolute bottom-8 right-2 z-10 hidden h-8 w-8 items-center justify-center rounded-full bg-black/70 text-white opacity-0 transition-opacity hover:bg-primary hover:text-primary-foreground focus-visible:opacity-100 group-hover:opacity-100 md:flex"
+        >
+          <Info className="h-4 w-4" />
+        </button>
+        </div>
 
-            <Link
-              to="/anime/$animeId"
-              params={{ animeId: anime.id }}
-              className="text-[11px] font-semibold text-primary hover:underline"
+        <div className="min-w-0 space-y-0.5">
+          <Link to="/anime/$animeId" params={{ animeId: anime.id }} className="block">
+            <h3
+              className={cn(
+                "line-clamp-2 text-[13px] font-semibold leading-snug text-card-foreground transition-colors group-hover:text-primary sm:text-sm",
+                featured && "text-sm sm:text-base",
+              )}
+              title={anime.title}
             >
-              Detail
-            </Link>
-          </div>
+              {anime.title}
+            </h3>
+          </Link>
+          <p className="flex items-center gap-1.5 truncate text-xs text-muted-foreground">
+            {anime.score ? (
+              <span className="inline-flex items-center gap-0.5 font-semibold text-foreground">
+                <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                {anime.score}
+              </span>
+            ) : null}
+            <span className="truncate">{meta}</span>
+          </p>
         </div>
       </div>
 
-      {/* Quick Preview Modal */}
       {previewMounted ? (
         <AnimeQuickPreviewModal anime={anime} open={previewOpen} onOpenChange={setPreviewOpen} />
       ) : null}
