@@ -12,7 +12,15 @@ import {
   Smartphone,
   Sparkles,
 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Switch } from "@/components/ui/switch";
+import {
+  clearNewAnimeFeed,
+  markNewAnimeRead,
+  onNewAnimeFeedChange,
+  readNewAnimeFeed,
+  type NewAnimeEntry,
+} from "@/lib/new-anime";
 import { SectionTitle } from "@/components/anime/StateViews";
 import {
   RECENT_SITE_UPDATES,
@@ -66,6 +74,7 @@ function NotificationsPage() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ text: string; ok: boolean } | null>(null);
   const [filter, setFilter] = useState<TagFilter>("semua");
+  const [feed, setFeed] = useState<NewAnimeEntry[]>([]);
 
   // Baca dari localStorage/browser hanya di klien agar tidak bentrok saat hydration
   useEffect(() => {
@@ -81,6 +90,12 @@ function NotificationsPage() {
       window.removeEventListener("site-updates-read-changed", sync);
       window.removeEventListener("notification-pref-changed", sync);
     };
+  }, []);
+
+  useEffect(() => {
+    const syncFeed = () => setFeed(readNewAnimeFeed());
+    syncFeed();
+    return onNewAnimeFeedChange(syncFeed);
   }, []);
 
   const isActive = permission === "granted" && prefOn;
@@ -171,7 +186,7 @@ function NotificationsPage() {
       </div>
 
       {/* Pengaturan notifikasi */}
-      <section className="space-y-3 rounded-3xl border border-border/80 bg-card p-5 shadow-sm">
+      <section className="space-y-3 rounded-xl border border-border/80 bg-card p-5 ">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3">
             <div
@@ -234,6 +249,68 @@ function NotificationsPage() {
         ) : null}
       </section>
 
+      {/* Anime & episode baru */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-display text-lg text-foreground">Anime dan episode baru</h2>
+          {feed.length > 0 ? (
+            <button
+              type="button"
+              onClick={() => clearNewAnimeFeed()}
+              className="text-xs font-semibold text-muted-foreground hover:text-foreground"
+            >
+              Hapus semua
+            </button>
+          ) : null}
+        </div>
+        {feed.length === 0 ? (
+          <p className="rounded-xl border border-dashed border-border p-5 text-center text-sm text-muted-foreground">
+            Belum ada anime atau episode baru. Situs memeriksanya otomatis tiap 5 menit selama
+            terbuka.
+          </p>
+        ) : (
+          <ul className="divide-y divide-border rounded-xl border border-border bg-card">
+            {feed.slice(0, 15).map((entry) => (
+              <li key={entry.key}>
+                <Link
+                  to="/anime/$animeId"
+                  params={{ animeId: entry.animeId }}
+                  onClick={() => markNewAnimeRead(entry.key)}
+                  className="flex items-center gap-3 p-3 transition-colors hover:bg-secondary/60"
+                >
+                  <span className="block h-14 w-10 shrink-0 overflow-hidden rounded-md bg-muted">
+                    {entry.poster ? (
+                      <img src={entry.poster} alt="" className="h-full w-full object-cover" />
+                    ) : null}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-xs font-semibold text-primary">
+                      {entry.kind === "episode"
+                        ? `Episode ${entry.episodeCount ?? "baru"} rilis`
+                        : "Anime baru"}
+                    </span>
+                    <span className="line-clamp-1 text-sm font-semibold text-card-foreground">
+                      {entry.title}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {new Intl.DateTimeFormat("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      }).format(new Date(entry.detectedAt))}
+                    </span>
+                  </span>
+                  {!entry.read ? (
+                    <span className="h-2 w-2 shrink-0 rounded-full bg-primary" aria-label="Belum dibaca" />
+                  ) : null}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
       {/* Log perubahan */}
       <section className="space-y-3">
         <div className="flex items-center justify-between gap-3">
@@ -274,7 +351,7 @@ function NotificationsPage() {
                 key={item.id}
                 onClick={() => handleRead(item.id)}
                 className={cn(
-                  "relative cursor-pointer space-y-2 rounded-2xl border p-4 transition-colors",
+                  "relative cursor-pointer space-y-2 rounded-xl border p-4 transition-colors",
                   isUnread
                     ? "border-primary/50 bg-primary/5"
                     : "border-border/60 bg-card/60 hover:bg-card",
@@ -296,7 +373,7 @@ function NotificationsPage() {
                   ) : null}
                 </div>
 
-                <h3 className="font-display text-sm font-bold text-foreground">{item.title}</h3>
+                <h3 className="font-display text-sm text-foreground">{item.title}</h3>
                 <p className="text-xs leading-relaxed text-muted-foreground">{item.description}</p>
 
                 {item.changes && item.changes.length > 0 ? (
@@ -317,7 +394,7 @@ function NotificationsPage() {
           })}
 
           {visibleUpdates.length === 0 ? (
-            <p className="rounded-2xl border border-dashed border-border/80 p-6 text-center text-xs text-muted-foreground">
+            <p className="rounded-xl border border-dashed border-border/80 p-6 text-center text-xs text-muted-foreground">
               Belum ada pembaruan di kategori ini.
             </p>
           ) : null}
